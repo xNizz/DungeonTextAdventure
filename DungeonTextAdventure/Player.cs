@@ -6,13 +6,15 @@
         public string ClassName { get; set; }
 
         public int Level { get; set; }
-        public int Exp {  get; set; }
+        public int Exp { get; set; }
         public int ExpToNextLevel { get; set; }
 
         public int MaxHp { get; set; }
         public int CurrentHp { get; set; }
         public int Attack { get; set; }
         public int Speed { get; set; }
+
+        public List<InventoryItem> Inventory { get; set; }
 
         public Player(string name, PlayerClass playerClass)
         {
@@ -28,6 +30,8 @@
             CurrentHp = playerClass.StartHp;
             Attack = playerClass.StartAttack;
             Speed = playerClass.StartSpeed;
+
+            Inventory = new List<InventoryItem>();
         }
 
         public void ShowStats()
@@ -67,6 +71,56 @@
             {
                 CurrentHp = MaxHp;
             }
+        }
+
+
+        public void AddItem(Item item)
+        {
+            bool itemWasStacked;
+            int i;
+
+            itemWasStacked = false;
+
+            if (item.IsStackable == true)
+            {
+                for (i = 0; i < Inventory.Count; i++)
+                {
+                    if (Inventory[i].Item.Name == item.Name)
+                    {
+                        Inventory[i].Quantity = Inventory[i].Quantity + 1;
+                        itemWasStacked = true;
+                        break;
+                    }
+                }
+            }
+
+            if (itemWasStacked == false)
+            {
+                Inventory.Add(new InventoryItem(item, 1));
+            }
+        }
+
+        public void ShowInventory()
+        {
+            int i;
+
+            Console.WriteLine("===== INVENTAR =====");
+            Console.WriteLine();
+
+            if (Inventory.Count == 0) 
+            {
+                Console.WriteLine("Dein Inventar ist Leer.");
+            }
+            else
+            {
+                for (i = 0; i < Inventory.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {Inventory[i].Item.Name} x{Inventory[i].Quantity}");
+                }
+            }
+            
+            Console.WriteLine();
+            Console.WriteLine("====================");
         }
     }
 }

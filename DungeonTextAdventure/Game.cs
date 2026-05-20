@@ -138,7 +138,8 @@
                     Console.WriteLine("1. Linke Tür öffnen");
                     Console.WriteLine("2. Rechte Tür öffnen");
                     Console.WriteLine("3. Stats anzeigen");
-                    Console.WriteLine("4. Dungeon verlassen");
+                    Console.WriteLine("4. Inventar anzeigen");
+                    Console.WriteLine("5. Dungeon verlassen");
                     Console.WriteLine();
 
                     Console.Write("Deine Auswahl: ");
@@ -198,11 +199,18 @@
                     {
                         Console.Clear();
 
-                        Console.WriteLine("Du verlässt den Dungeon.");
+                        player.ShowInventory();
 
+                        Console.WriteLine();
+                        Console.WriteLine("Drücke eine Taste, um zur Tür-Auswahl zurückzukehren...");
+                        Console.ReadKey();
+                    }
+                    else if (input == "5")
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Du verlässt den Dungeon.");
                         validInput = true;
                         dungeonIsRunning = false;
-
                         Console.WriteLine();
                         Console.WriteLine("Drücke eine Taste, um fortzufahren...");
                         Console.ReadKey();
@@ -210,9 +218,7 @@
                     else
                     {
                         Console.Clear();
-
-                        Console.WriteLine("Ungültige Eingabe. Bitte 1, 2, 3 oder 4 eingeben.");
-
+                        Console.WriteLine("Ungültige Eingabe. Bitte 1, 2, 3, 4 oder 5 eingeben.");
                         Console.WriteLine();
                         Console.WriteLine("Drücke eine Taste, um es erneut zu versuchen...");
                         Console.ReadKey();
@@ -225,6 +231,7 @@
         {
             int eventRoll;
             Enemy enemy;
+            Item foundItem;
 
             eventRoll = random.Next(1, 101);
 
@@ -255,8 +262,15 @@
             }
             else
             {
+                foundItem = CreateRandomItem();
+
                 Console.WriteLine("Du findest etwas am Boden.");
-                Console.WriteLine("Hier wird später ein Item generiert.");
+                Console.WriteLine($"Gefunden: {foundItem.Name}");
+
+                player.AddItem(foundItem);
+
+                Console.WriteLine();
+                Console.WriteLine($"{foundItem.Name} wurde deinem Inventar hinzugefügt.");
 
                 Console.WriteLine();
                 Console.WriteLine("Drücke eine Taste, um fortzufahren...");
@@ -393,6 +407,33 @@
                     Console.ReadLine();
                 }
             }
+        }
+
+        private Item CreateRandomItem()
+        {
+            int itemRoll;
+            Item item;
+
+            itemRoll = random.Next(1, 101);
+
+            if (itemRoll <= 60)
+            {
+                item = new Item("Kleiner Heiltrank", "Potion", "None", 30, 0, 0, 0, true);
+            }
+            else if (itemRoll <= 80)
+            {
+                item = new Item("Großer Heiltrank", "Potion", "None", 60, 0, 0, 0, true);
+            }
+            else if (itemRoll <= 90)
+            {
+                item = new Item("Rostiges Schwert", "Equipment", "Weapon", 0, 0, 2, 0, false);
+            }
+            else
+            {
+                item = new Item("Lederrüstung", "Equipment", "Armor", 0, 20, 0, 0, false);
+            }
+
+            return item;
         }
     }
 }
