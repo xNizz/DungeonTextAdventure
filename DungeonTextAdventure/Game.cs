@@ -1,9 +1,15 @@
-﻿using System;
-
-namespace DungeonTextAdventure
+﻿namespace DungeonTextAdventure
 {
     internal class Game
     {
+        private Random random;
+
+        public Game()
+        {
+            random = new Random();
+        }
+
+
         public void StartGame()
         {
             Player player;
@@ -150,11 +156,13 @@ namespace DungeonTextAdventure
 
                         Console.WriteLine($"Du betrittst Raum {currentRoom}.");
                         Console.WriteLine();
-                        Console.WriteLine("Später, zufälliges ereignis.");
 
-                        Console.WriteLine();
-                        Console.WriteLine("Drücke eine Taste, um fortzufahren...");
-                        Console.ReadKey();
+                        GenerateRoomEvent(player, currentRoom);
+
+                        if (player.IsDead())
+                        {
+                            dungeonIsRunning = false;
+                        }
                     }
                     else if (input == "2")
                     {
@@ -168,11 +176,13 @@ namespace DungeonTextAdventure
 
                         Console.WriteLine($"Du betrittst Raum {currentRoom}.");
                         Console.WriteLine();
-                        Console.WriteLine("Hier wird spaeter ein zufälliges Ereignis generiert.");
 
-                        Console.WriteLine();
-                        Console.WriteLine("Drücke eine Taste, um fortzufahren...");
-                        Console.ReadKey();
+                        GenerateRoomEvent(player, currentRoom);
+
+                        if (player.IsDead())
+                        {
+                            dungeonIsRunning = false;
+                        }
                     }
                     else if (input == "3")
                     {
@@ -209,6 +219,93 @@ namespace DungeonTextAdventure
                     }
                 }
             }
+        }
+
+        private void GenerateRoomEvent(Player player, int currentRoom)
+        {
+            int eventRoll;
+            Enemy enemy;
+
+            eventRoll = random.Next(1, 101);
+
+            Console.Clear();
+
+            if (eventRoll <= 60)
+            {
+                Console.WriteLine("Du betrittst einen Gegnerraum!");
+                Console.WriteLine();
+
+                enemy = CreateRandomEnemy(currentRoom);
+
+                Console.WriteLine($"Ein {enemy.Name} erscheint!");
+                Console.WriteLine();
+                Console.WriteLine("Drücke eine Taste, um den Kampf zu starten...");
+                Console.ReadKey();
+
+                StartFight(player, enemy);
+            }
+            else if (eventRoll <= 85)
+            {
+                Console.WriteLine("Der Raum ist leer.");
+                Console.WriteLine("Du kannst kurz durchatmen.");
+
+                Console.WriteLine();
+                Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("Du findest etwas am Boden.");
+                Console.WriteLine("Hier wird später ein Item generiert.");
+
+                Console.WriteLine();
+                Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                Console.ReadKey();
+            }
+        }
+
+        private Enemy CreateRandomEnemy(int currentRoom)
+        {
+            int enemyRoll;
+            Enemy enemy;
+
+            enemyRoll = random.Next(1, 101);
+
+            if (currentRoom <= 2)
+            {
+                if (enemyRoll <= 70)
+                {
+                    enemy = new Goblin();
+                }
+                else
+                {
+                    enemy = new Skeleton();
+                }
+            }
+            else if (currentRoom <= 4)
+            {
+                if (enemyRoll <= 80)
+                {
+                    enemy = new Skeleton();
+                }
+                else
+                {
+                    enemy = new Orc();
+                }
+            }
+            else
+            {
+                if (enemyRoll <= 35)
+                {
+                    enemy = new Skeleton();
+                }
+                else
+                {
+                    enemy = new Orc();
+                }
+            }
+
+            return enemy;
         }
 
         private void StartFight(Player player, Enemy enemy)
@@ -271,14 +368,29 @@ namespace DungeonTextAdventure
                 {
                     Console.Clear();
                     Console.WriteLine("Du wurdest besiegt.");
+                    Console.WriteLine("Deine Reise endet hier.");
+
                     fightIsRunning = false;
+
+                    Console.WriteLine();
+                    Console.WriteLine("Drücke Enter, um fortzufahren...");
+                    Console.ReadLine();
+
                 }
                 else if (enemy.IsDead())
                 {
                     Console.Clear();
+
                     Console.WriteLine($"{enemy.Name} wurde besiegt.");
                     Console.WriteLine($"Du erhältst {enemy.ExpReward} EXP.");
+                    Console.WriteLine();
+                    Console.WriteLine("Der Weg durch den Dungeon geht weiter.");
+
                     fightIsRunning = false;
+
+                    Console.WriteLine();
+                    Console.WriteLine("Druecke Enter, um fortzufahren...");
+                    Console.ReadLine();
                 }
             }
         }
