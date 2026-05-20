@@ -5,6 +5,7 @@
         public void StartGame()
         {
             Player player;
+            Enemy testEnemy;
 
             Console.Clear();
 
@@ -21,6 +22,14 @@
 
             Console.WriteLine();
             Console.WriteLine("Druecke eine Taste, um fortzufahren...");
+            Console.ReadKey();
+
+            testEnemy = new Goblin();
+
+            StartFight(player, testEnemy);
+
+            Console.WriteLine();
+            Console.WriteLine("Druecke eine Taste, um das Spiel zu beenden...");
             Console.ReadKey();
         }
 
@@ -93,6 +102,78 @@
             player = new Player(playerName, selectedClass);
 
             return player;
+        }
+
+        private void StartFight(Player player, Enemy enemy)
+        {
+            bool fightIsRunning;
+
+            fightIsRunning = true;
+
+            while (fightIsRunning == true)
+            {
+                Console.Clear();
+
+                Console.WriteLine("Ein Gegner erscheint!");
+                Console.WriteLine();
+
+                player.ShowStats();
+                Console.WriteLine();
+                enemy.ShowStats();
+
+                Console.WriteLine();
+                Console.WriteLine("Drücke eine Taste für die nächste Kampfrunde...");
+                Console.ReadKey();
+
+                Console.Clear();
+
+                if (player.Speed >= enemy.Speed)
+                {
+                    Console.WriteLine($"{player.Name} ist schneller und greift zuerst an.");
+                    enemy.TakeDamage(player.Attack);
+                    Console.WriteLine($"{enemy.Name} verliert {player.Attack} HP.");
+
+                    if (enemy.IsDead() == false)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine($"{enemy.Name} greift zurueck.");
+                        player.TakeDamage(enemy.Attack);
+                        Console.WriteLine($"{player.Name} verliert {enemy.Attack} HP.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"{enemy.Name} ist schneller und greift zuerst an.");
+                    player.TakeDamage(enemy.Attack);
+                    Console.WriteLine($"{player.Name} verliert {enemy.Attack} HP.");
+
+                    if (player.IsDead() == false)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine($"{player.Name} greift zurueck.");
+                        enemy.TakeDamage(player.Attack);
+                        Console.WriteLine($"{enemy.Name} verliert {player.Attack} HP.");
+                    }
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                Console.ReadKey();
+
+                if (player.IsDead())
+                {
+                    Console.Clear();
+                    Console.WriteLine("Du wurdest besiegt.");
+                    fightIsRunning = false;
+                }
+                else if (enemy.IsDead())
+                {
+                    Console.Clear();
+                    Console.WriteLine($"{enemy.Name} wurde besiegt.");
+                    Console.WriteLine($"Du erhältst {enemy.ExpReward} EXP.");
+                    fightIsRunning = false;
+                }
+            }
         }
     }
 }

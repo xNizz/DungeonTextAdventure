@@ -42,5 +42,31 @@
             Console.WriteLine($"EXP: {Exp} / {ExpToNextLevel}");
             Console.WriteLine("========================");
         }
+
+        public void TakeDamage(int damage)
+        {
+            CurrentHp = CurrentHp - damage;
+
+            if (CurrentHp < 0)
+            {
+                CurrentHp = 0;
+            }
+
+        }
+
+        public bool IsDead()
+        {
+            return CurrentHp <= 0;
+        }
+
+        public void Heal(int healAmount)
+        {
+            CurrentHp = CurrentHp + healAmount;
+
+            if (CurrentHp > 0)
+            {
+                CurrentHp = MaxHp;
+            }
+        }
     }
 }

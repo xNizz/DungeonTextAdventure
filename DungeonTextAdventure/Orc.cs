@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonTextAdventure
+﻿namespace DungeonTextAdventure
 {
-    internal class Orc
+    internal class Orc : Enemy
     {
+        public Orc() : base("Orc", 50, 9, 4, 45) 
+        {
+            
+        }
     }
 }

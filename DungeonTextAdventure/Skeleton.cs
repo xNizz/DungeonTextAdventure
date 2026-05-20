@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonTextAdventure
+﻿namespace DungeonTextAdventure
 {
-    internal class Skeleton
+    internal class Skeleton : Enemy
     {
+        public Skeleton() : base("Skeleton", 35, 7, 6, 30)
+        {
+
+        }
     }
 }

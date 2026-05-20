@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonTextAdventure
+﻿namespace DungeonTextAdventure
 {
-    internal class Boss
+    internal class Boss : Enemy
     {
+        public Boss() : base("Dungeon Boss", 120, 14, 7, 100)
+        {
+
+        }
     }
 }
