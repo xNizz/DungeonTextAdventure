@@ -1,11 +1,12 @@
-﻿namespace DungeonTextAdventure
+﻿using System;
+
+namespace DungeonTextAdventure
 {
     internal class Game
     {
         public void StartGame()
         {
             Player player;
-            Enemy testEnemy;
 
             Console.Clear();
 
@@ -21,15 +22,15 @@
             player.ShowStats();
 
             Console.WriteLine();
-            Console.WriteLine("Druecke eine Taste, um fortzufahren...");
+            Console.WriteLine("Druecke eine Taste, um den Dungeon zu betreten...");
             Console.ReadKey();
 
-            testEnemy = new Goblin();
+            StartDungeon(player);
 
-            StartFight(player, testEnemy);
-
+            Console.Clear();
+            Console.WriteLine("Das Spiel wurde beendet.");
             Console.WriteLine();
-            Console.WriteLine("Druecke eine Taste, um das Spiel zu beenden...");
+            Console.WriteLine("Druecke eine Taste, um das Programm zu schließen...");
             Console.ReadKey();
         }
 
@@ -102,6 +103,112 @@
             player = new Player(playerName, selectedClass);
 
             return player;
+        }
+
+        private void StartDungeon(Player player)
+        {
+            int currentRoom;
+            string input;
+            bool dungeonIsRunning;
+            bool validInput;
+
+            currentRoom = 1;
+            dungeonIsRunning = true;
+
+            while (dungeonIsRunning == true)
+            {
+                validInput = false;
+
+                while (validInput == false)
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("===== DUNGEON =====");
+                    Console.WriteLine();
+                    Console.WriteLine($"Aktueller Raum: {currentRoom}");
+                    Console.WriteLine();
+                    Console.WriteLine("Vor dir befinden sich zwei Türen.");
+                    Console.WriteLine();
+                    Console.WriteLine("1. Linke Tür öffnen");
+                    Console.WriteLine("2. Rechte Tür öffnen");
+                    Console.WriteLine("3. Stats anzeigen");
+                    Console.WriteLine("4. Dungeon verlassen");
+                    Console.WriteLine();
+
+                    Console.Write("Deine Auswahl: ");
+                    input = Console.ReadLine() ?? "";
+
+                    if (input == "1")
+                    {
+                        Console.Clear();
+
+                        Console.WriteLine("Du öffnest die linke Tür...");
+                        Console.WriteLine();
+
+                        currentRoom = currentRoom + 1;
+                        validInput = true;
+
+                        Console.WriteLine($"Du betrittst Raum {currentRoom}.");
+                        Console.WriteLine();
+                        Console.WriteLine("Später, zufälliges ereignis.");
+
+                        Console.WriteLine();
+                        Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                        Console.ReadKey();
+                    }
+                    else if (input == "2")
+                    {
+                        Console.Clear();
+
+                        Console.WriteLine("Du öffnest die rechte Tür...");
+                        Console.WriteLine();
+
+                        currentRoom = currentRoom + 1;
+                        validInput = true;
+
+                        Console.WriteLine($"Du betrittst Raum {currentRoom}.");
+                        Console.WriteLine();
+                        Console.WriteLine("Hier wird spaeter ein zufälliges Ereignis generiert.");
+
+                        Console.WriteLine();
+                        Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                        Console.ReadKey();
+                    }
+                    else if (input == "3")
+                    {
+                        Console.Clear();
+
+                        player.ShowStats();
+
+                        Console.WriteLine();
+                        Console.WriteLine("Drücke eine Taste, um zur Tür-Auswahl zurückzukehren...");
+                        Console.ReadKey();
+                    }
+                    else if (input == "4")
+                    {
+                        Console.Clear();
+
+                        Console.WriteLine("Du verlässt den Dungeon.");
+
+                        validInput = true;
+                        dungeonIsRunning = false;
+
+                        Console.WriteLine();
+                        Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.Clear();
+
+                        Console.WriteLine("Ungültige Eingabe. Bitte 1, 2, 3 oder 4 eingeben.");
+
+                        Console.WriteLine();
+                        Console.WriteLine("Drücke eine Taste, um es erneut zu versuchen...");
+                        Console.ReadKey();
+                    }
+                }
+            }
         }
 
         private void StartFight(Player player, Enemy enemy)
