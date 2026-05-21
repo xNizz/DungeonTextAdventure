@@ -16,6 +16,10 @@
 
         public List<InventoryItem> Inventory { get; set; }
 
+        public Item? EquippedWeapon { get; set; }
+        public Item? EquippedArmor { get; set; }
+        public Item? EquippedBoots { get; set; }
+
         public Player(string name, PlayerClass playerClass)
         {
             Name = name;
@@ -32,6 +36,10 @@
             Speed = playerClass.StartSpeed;
 
             Inventory = new List<InventoryItem>();
+
+            EquippedWeapon = null;
+            EquippedArmor = null;
+            EquippedBoots = null;
         }
 
         public void ShowStats()
@@ -67,7 +75,7 @@
         {
             CurrentHp = CurrentHp + healAmount;
 
-            if (CurrentHp > 0)
+            if (CurrentHp > MaxHp)
             {
                 CurrentHp = MaxHp;
             }
@@ -106,7 +114,7 @@
             Console.WriteLine("===== INVENTAR =====");
             Console.WriteLine();
 
-            if (Inventory.Count == 0) 
+            if (Inventory.Count == 0)
             {
                 Console.WriteLine("Dein Inventar ist Leer.");
             }
@@ -117,8 +125,39 @@
                     Console.WriteLine($"{i + 1}. {Inventory[i].Item.Name} x{Inventory[i].Quantity}");
                 }
             }
-            
+
             Console.WriteLine();
+            Console.WriteLine("===== AUSRÜSTUNG =====");
+            Console.WriteLine();
+
+            if (EquippedWeapon == null)
+            {
+                Console.WriteLine("Waffe: Keine");
+            }
+            else
+            {
+                Console.WriteLine($"Waffe: {EquippedWeapon.Name}");
+            }
+
+            if (EquippedArmor == null)
+            {
+                Console.WriteLine("Rüstung: Keine");
+            }
+            else
+            {
+                Console.WriteLine($"Rüstung: {EquippedArmor.Name}");
+            }
+
+            if (EquippedBoots == null)
+            {
+                Console.WriteLine("Schuhe: Keine");
+            }
+            else
+            {
+                Console.WriteLine($"Schuhe: {EquippedBoots.Name}");
+            }
+
+                Console.WriteLine();
             Console.WriteLine("====================");
         }
 
@@ -168,6 +207,88 @@
 
             Console.WriteLine($"{item.Name} benutzt.");
             Console.WriteLine($"Du heilst {healedAmount} HP.");
+
+            return true;
+        }
+
+        public bool EquipItem(int inventoryIndex)
+        {
+            InventoryItem inventoryItem;
+            Item item;
+
+            if (inventoryIndex < 0 || inventoryIndex >= Inventory.Count)
+            {
+                Console.WriteLine("Dieses Item existiert nicht.");
+
+                return false;
+            }
+
+            inventoryItem = Inventory[inventoryIndex];
+            item = inventoryItem.Item;
+
+            if (item.Type != "Equipment")
+            {
+                Console.WriteLine("Dieses Item kann nicht ausgerüstet werden.");
+
+                return false;
+            }
+
+            if (item.Slot == "Weapon")
+            {
+                if (EquippedWeapon != null)
+                {
+                    Attack = Attack - EquippedWeapon.AttackBonus;
+                }
+
+                EquippedWeapon = item;
+                Attack = Attack + item.AttackBonus;
+
+                Console.WriteLine($"{item.Name} wurde als Waffe ausgerüstet.");
+                Console.WriteLine($"ANG +{item.AttackBonus}");
+            }
+            else if (item.Slot == "Armor")
+            {
+                if (EquippedArmor != null)
+                {
+                    MaxHp = MaxHp - EquippedArmor.HpBonus;
+
+                    if (CurrentHp > MaxHp)
+                    {
+                        CurrentHp = MaxHp;
+                    }
+                }
+
+                EquippedArmor = item;
+                MaxHp = MaxHp + item.HpBonus;
+                CurrentHp = CurrentHp + item.HpBonus;
+
+                if (CurrentHp > MaxHp)
+                {
+                    CurrentHp = MaxHp;
+                }
+
+                Console.WriteLine($"{item.Name} wurde als Rüstung ausgerüstet.");
+                Console.WriteLine($"HP +{item.HpBonus}");
+            }
+            else if (item.Slot == "Boots")
+            {
+                if (EquippedBoots != null)
+                {
+                    Speed = Speed - EquippedBoots.SpeedBonus;
+                }
+
+                EquippedBoots = item;
+                Speed = Speed + item.SpeedBonus;
+
+                Console.WriteLine($"{item.Name} wurden als Schuhe ausgerüstet.");
+                Console.WriteLine($"SPD +{item.SpeedBonus}");
+            }
+            else
+            {
+                Console.WriteLine("Dieses Ausrüstungsteil hat keinen gültigen Slot.");
+
+                return false;
+            }
 
             return true;
         }

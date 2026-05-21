@@ -231,7 +231,7 @@
 
             Console.Clear();
 
-            if (eventRoll <= 60)
+            if (eventRoll <= 40)
             {
                 Console.WriteLine("Du betrittst einen Gegnerraum!");
                 Console.WriteLine();
@@ -245,7 +245,7 @@
 
                 StartFight(player, enemy);
             }
-            else if (eventRoll <= 85)
+            else if (eventRoll <= 60)
             {
                 Console.WriteLine("Der Raum ist leer.");
                 Console.WriteLine("Du kannst kurz durchatmen.");
@@ -410,21 +410,25 @@
 
             itemRoll = random.Next(1, 101);
 
-            if (itemRoll <= 60)
+            if (itemRoll <= 45)
             {
                 item = new Item("Kleiner Heiltrank", "Potion", "None", 30, 0, 0, 0, true);
             }
-            else if (itemRoll <= 80)
+            else if (itemRoll <= 65)
             {
                 item = new Item("Großer Heiltrank", "Potion", "None", 60, 0, 0, 0, true);
             }
-            else if (itemRoll <= 90)
+            else if (itemRoll <= 80)
             {
                 item = new Item("Rostiges Schwert", "Equipment", "Weapon", 0, 0, 2, 0, false);
             }
-            else
+            else if (itemRoll <= 90)
             {
                 item = new Item("Lederrüstung", "Equipment", "Armor", 0, 20, 0, 0, false);
+            }
+            else
+            {
+                item = new Item("Leichte Stiefel", "Equipment", "Boots", 0, 0, 0, 2, false);
             }
 
             return item;
@@ -449,7 +453,8 @@
                 Console.WriteLine("Was möchtest du tun?");
                 Console.WriteLine();
                 Console.WriteLine("1. Item benutzen");
-                Console.WriteLine("2. Zurück");
+                Console.WriteLine("2. Ausrüstung anlegen");
+                Console.WriteLine("3. Zurück");
                 Console.WriteLine();
                 Console.Write("Deine Auswahl: ");
 
@@ -493,6 +498,43 @@
                     Console.ReadKey();
                 }
                 else if (input == "2")
+                {
+                    Console.Clear();
+
+                    if (player.Inventory.Count == 0)
+                    {
+                        Console.WriteLine("Dein Inventar ist leer.");
+                    }
+                    else
+                    {
+                        player.ShowInventory();
+
+                        Console.WriteLine();
+                        Console.Write("Welche Ausrüstung möchtest du anlegen? ");
+
+                        input = Console.ReadLine() ?? "";
+
+                        if (int.TryParse(input, out selectedItemNumber))
+                        {
+                            inventoryIndex = selectedItemNumber - 1;
+
+                            Console.Clear();
+
+                            player.EquipItem(inventoryIndex);
+                        }
+                        else
+                        {
+                            Console.Clear();
+
+                            Console.WriteLine("Ungültige Eingabe. Bitte eine Zahl eingeben.");
+                        }
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Drücke eine Taste, um zum Inventar zurückzukehren...");
+                    Console.ReadKey();
+                }
+                else if (input == "3")
                 {
                     inventoryIsOpen = false;
                 }
