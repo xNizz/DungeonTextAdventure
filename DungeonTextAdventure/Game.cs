@@ -197,13 +197,7 @@
                     }
                     else if (input == "4")
                     {
-                        Console.Clear();
-
-                        player.ShowInventory();
-
-                        Console.WriteLine();
-                        Console.WriteLine("Drücke eine Taste, um zur Tür-Auswahl zurückzukehren...");
-                        Console.ReadKey();
+                        OpenInventory(player);
                     }
                     else if (input == "5")
                     {
@@ -434,6 +428,84 @@
             }
 
             return item;
+        }
+
+        private void OpenInventory(Player player)
+        {
+            string input;
+            bool inventoryIsOpen;
+            int selectedItemNumber;
+            int inventoryIndex;
+
+            inventoryIsOpen = true;
+
+            while (inventoryIsOpen == true)
+            {
+                Console.Clear();
+
+                player.ShowInventory();
+
+                Console.WriteLine();
+                Console.WriteLine("Was möchtest du tun?");
+                Console.WriteLine();
+                Console.WriteLine("1. Item benutzen");
+                Console.WriteLine("2. Zurück");
+                Console.WriteLine();
+                Console.Write("Deine Auswahl: ");
+
+                input = Console.ReadLine() ?? "";
+
+                if (input == "1")
+                {
+                    Console.Clear();
+
+                    if (player.Inventory.Count == 0)
+                    {
+                        Console.WriteLine("Dein Inventar ist leer.");
+                    }
+                    else
+                    {
+                        player.ShowInventory();
+
+                        Console.WriteLine();
+                        Console.Write("Welches Item möchtest du benutzen? ");
+
+                        input = Console.ReadLine() ?? "";
+
+                        if (int.TryParse(input, out selectedItemNumber))
+                        {
+                            inventoryIndex = selectedItemNumber - 1;
+
+                            Console.Clear();
+
+                            player.UsePotion(inventoryIndex);
+                        }
+                        else
+                        {
+                            Console.Clear();
+
+                            Console.WriteLine("Ungültige Eingabe. Bitte eine Zahl eingeben.");
+                        }
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Drücke eine Taste, um zum Inventar zurückzukehren...");
+                    Console.ReadKey();
+                }
+                else if (input == "2")
+                {
+                    inventoryIsOpen = false;
+                }
+                else
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("Ungültige Eingabe. Bitte 1 oder 2 eingeben.");
+                    Console.WriteLine();
+                    Console.WriteLine("Drücke eine Taste, um es erneut zu versucen...");
+                    Console.ReadKey();
+                }
+            }
         }
     }
 }

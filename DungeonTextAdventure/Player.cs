@@ -73,7 +73,6 @@
             }
         }
 
-
         public void AddItem(Item item)
         {
             bool itemWasStacked;
@@ -121,6 +120,56 @@
             
             Console.WriteLine();
             Console.WriteLine("====================");
+        }
+
+        public bool UsePotion(int inventoryIndex)
+        {
+            InventoryItem inventoryItem;
+            Item item;
+            int oldHp;
+            int healedAmount;
+
+            if (inventoryIndex < 0 || inventoryIndex >= Inventory.Count)
+            {
+                Console.WriteLine("Dieses Item existiert nicht.");
+
+                return false;
+            }
+
+            inventoryItem = Inventory[inventoryIndex];
+            item = inventoryItem.Item;
+
+            if (item.Type != "Potion")
+            {
+                Console.WriteLine("Dieses Item kann aktuell nicht benutzt werden.");
+
+                return false;
+            }
+
+            if (CurrentHp == MaxHp)
+            {
+                Console.WriteLine("Deine Hp sind bereits voll.");
+
+                return false;
+            }
+
+            oldHp = CurrentHp;
+
+            Heal(item.HealAmount);
+
+            healedAmount = CurrentHp - oldHp;
+
+            inventoryItem.Quantity = inventoryItem.Quantity - 1;
+
+            if (inventoryItem.Quantity <= 0)
+            {
+                Inventory.RemoveAt(inventoryIndex);
+            }
+
+            Console.WriteLine($"{item.Name} benutzt.");
+            Console.WriteLine($"Du heilst {healedAmount} HP.");
+
+            return true;
         }
     }
 }
