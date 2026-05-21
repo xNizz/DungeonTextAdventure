@@ -117,6 +117,7 @@
             string input;
             bool dungeonIsRunning;
             bool validInput;
+            bool bossWasDefeated;
 
             currentRoom = 1;
             dungeonIsRunning = true;
@@ -158,9 +159,9 @@
                         Console.WriteLine($"Du betrittst Raum {currentRoom}.");
                         Console.WriteLine();
 
-                        GenerateRoomEvent(player, currentRoom);
+                        bossWasDefeated = GenerateRoomEvent(player, currentRoom);
 
-                        if (player.IsDead())
+                        if (player.IsDead() || bossWasDefeated)
                         {
                             dungeonIsRunning = false;
                         }
@@ -178,9 +179,9 @@
                         Console.WriteLine($"Du betrittst Raum {currentRoom}.");
                         Console.WriteLine();
 
-                        GenerateRoomEvent(player, currentRoom);
+                        bossWasDefeated = GenerateRoomEvent(player, currentRoom);
 
-                        if (player.IsDead())
+                        if (player.IsDead() || bossWasDefeated)
                         {
                             dungeonIsRunning = false;
                         }
@@ -221,17 +222,59 @@
             }
         }
 
-        private void GenerateRoomEvent(Player player, int currentRoom)
+        private bool GenerateRoomEvent(Player player, int currentRoom)
         {
             int eventRoll;
+            int bossRoll;
             Enemy enemy;
             Item foundItem;
+            bool bossWasDefeated;
 
-            eventRoll = random.Next(1, 101);
+            bossWasDefeated = false;
 
             Console.Clear();
 
-            if (eventRoll <= 40)
+            bossRoll = random.Next(1, 101);
+
+            if (currentRoom >= 8 || (currentRoom >= 5 && bossRoll <= 20))
+            {
+                Console.WriteLine("Du findest eine große, dunkle Tür.");
+                Console.WriteLine("Hinter ihr spürst du eine starke Präsenz...");
+                Console.WriteLine();
+                Console.WriteLine("Du hast den Bossraum gefunden!");
+                Console.WriteLine();
+
+                enemy = new Boss();
+
+                Console.WriteLine($"Der Boss erscheint: {enemy.Name}");
+                Console.WriteLine();
+                Console.WriteLine("Drücke eine Taste, um den Bosskampf zu starten...");
+                Console.ReadKey();
+
+                StartFight(player, enemy);
+
+                if (enemy.IsDead() && player.IsDead() == false)
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("Du hast den Boss besiegt!");
+                    Console.WriteLine("Der Dungeon wurde erfolgreich abgeschlossen.");
+                    Console.WriteLine();
+                    Console.WriteLine("Du hasst gewonnen!");
+
+                    bossWasDefeated = true;
+
+                    Console.WriteLine();
+                    Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+                    Console.ReadKey();
+                }
+
+                return bossWasDefeated;
+            }
+
+            eventRoll = random.Next(1, 101);
+
+            if (eventRoll <= 60)
             {
                 Console.WriteLine("Du betrittst einen Gegnerraum!");
                 Console.WriteLine();
@@ -245,7 +288,7 @@
 
                 StartFight(player, enemy);
             }
-            else if (eventRoll <= 60)
+            else if (eventRoll <= 85)
             {
                 Console.WriteLine("Der Raum ist leer.");
                 Console.WriteLine("Du kannst kurz durchatmen.");
@@ -270,6 +313,8 @@
                 Console.WriteLine("Drücke eine Taste, um fortzufahren...");
                 Console.ReadKey();
             }
+
+            return bossWasDefeated;
         }
 
         private Enemy CreateRandomEnemy(int currentRoom)
