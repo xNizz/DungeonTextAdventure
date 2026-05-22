@@ -109,113 +109,92 @@
         private void StartDungeon(Player player)
         {
             int currentRoom;
-            string input;
+            int selectedOption;
             bool dungeonIsRunning;
-            bool validInput;
             bool bossWasDefeated;
+            string[] dungeonOptions;
 
             currentRoom = 1;
             dungeonIsRunning = true;
 
+            dungeonOptions = new string[]
+            {
+                "Linke Tür öffnen",
+                "Rechte Tür öffnen",
+                "Stats anzeigen",
+                "Inventar anzeigen",
+                "Dungeon verlassen"
+            };
+
             while (dungeonIsRunning == true)
             {
-                validInput = false;
+                selectedOption = ShowSelectionMenu("DUNGEON", dungeonOptions);
 
-                while (validInput == false)
+                if (selectedOption == 0)
                 {
                     Console.Clear();
 
-                    Console.WriteLine("===== DUNGEON =====");
-                    Console.WriteLine();
-                    Console.WriteLine($"Aktueller Raum: {currentRoom}");
-                    Console.WriteLine();
-                    Console.WriteLine("Vor dir befinden sich zwei Türen.");
-                    Console.WriteLine();
-                    Console.WriteLine("1. Linke Tür öffnen");
-                    Console.WriteLine("2. Rechte Tür öffnen");
-                    Console.WriteLine("3. Stats anzeigen");
-                    Console.WriteLine("4. Inventar anzeigen");
-                    Console.WriteLine("5. Dungeon verlassen");
+                    Console.WriteLine("Du öffnest die linke Tür...");
                     Console.WriteLine();
 
-                    Console.Write("Deine Auswahl: ");
-                    input = Console.ReadLine() ?? "";
+                    currentRoom = currentRoom + 1;
 
-                    if (input == "1")
+                    Console.WriteLine($"Du betrittst Raum {currentRoom}.");
+
+                    PauseWithKey("Drücke eine Taste, um fortzufahren...");
+
+                    bossWasDefeated = GenerateRoomEvent(player, currentRoom);
+
+                    if (player.IsDead() || bossWasDefeated)
                     {
-                        Console.Clear();
-
-                        Console.WriteLine("Du öffnest die linke Tür...");
-                        Console.WriteLine();
-
-                        currentRoom = currentRoom + 1;
-                        validInput = true;
-
-                        Console.WriteLine($"Du betrittst Raum {currentRoom}.");
-                        Console.WriteLine();
-
-                        bossWasDefeated = GenerateRoomEvent(player, currentRoom);
-
-                        if (player.IsDead() || bossWasDefeated)
-                        {
-                            dungeonIsRunning = false;
-                        }
-                    }
-                    else if (input == "2")
-                    {
-                        Console.Clear();
-
-                        Console.WriteLine("Du öffnest die rechte Tür...");
-                        Console.WriteLine();
-
-                        currentRoom = currentRoom + 1;
-                        validInput = true;
-
-                        Console.WriteLine($"Du betrittst Raum {currentRoom}.");
-                        Console.WriteLine();
-
-                        bossWasDefeated = GenerateRoomEvent(player, currentRoom);
-
-                        if (player.IsDead() || bossWasDefeated)
-                        {
-                            dungeonIsRunning = false;
-                        }
-                    }
-                    else if (input == "3")
-                    {
-                        Console.Clear();
-
-                        player.ShowStats();
-
-                        Console.WriteLine();
-                        Console.WriteLine("Drücke eine Taste, um zur Tür-Auswahl zurückzukehren...");
-                        Console.ReadKey();
-                    }
-                    else if (input == "4")
-                    {
-                        OpenInventory(player);
-                    }
-                    else if (input == "5")
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Du verlässt den Dungeon.");
-                        validInput = true;
                         dungeonIsRunning = false;
-                        Console.WriteLine();
-                        Console.WriteLine("Drücke eine Taste, um fortzufahren...");
-                        Console.ReadKey();
                     }
-                    else
+                }
+                else if (selectedOption == 1)
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("Du öffnest die rechte Tür...");
+                    Console.WriteLine();
+
+                    currentRoom = currentRoom + 1;
+
+                    Console.WriteLine($"Du betrittst Raum {currentRoom}.");
+
+                    PauseWithKey("Drücke eine Taste, um fortzufahren...");
+
+                    bossWasDefeated = GenerateRoomEvent(player, currentRoom);
+
+                    if (player.IsDead() || bossWasDefeated)
                     {
-                        Console.Clear();
-                        Console.WriteLine("Ungültige Eingabe. Bitte 1, 2, 3, 4 oder 5 eingeben.");
-                        Console.WriteLine();
-                        Console.WriteLine("Drücke eine Taste, um es erneut zu versuchen...");
-                        Console.ReadKey();
+                        dungeonIsRunning = false;
                     }
+                }
+                else if (selectedOption == 2)
+                {
+                    Console.Clear();
+
+                    player.ShowStats();
+
+                    PauseWithKey("Drücke eine Taste, um zur Tür-Auswahl zurückzukehren...");
+                }
+                else if (selectedOption == 3)
+                {
+                    OpenInventory(player);
+                }
+                else if (selectedOption == 4)
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("Du verlässt den Dungeon.");
+
+                    dungeonIsRunning = false;
+
+                    PauseWithKey("Drücke eine Taste, um fortzufahren...");
                 }
             }
         }
+        
 
         private bool GenerateRoomEvent(Player player, int currentRoom)
         {
@@ -592,6 +571,9 @@
             }
         }
 
+
+        //Hilfsmethoden
+
         private void PauseWithKey(string message)
         {
             Console.WriteLine();
@@ -619,6 +601,65 @@
             Console.ForegroundColor = color;
             Console.WriteLine(text);
             Console.ResetColor();
+        }
+
+        private int ShowSelectionMenu(string title, string[] options)
+        {
+            int selectedIndex;
+            int i;
+            bool selectionConfirmed;
+            ConsoleKeyInfo keyInfo;
+
+            selectedIndex = 0;
+            selectionConfirmed = false;
+
+            while (selectionConfirmed == false)
+            {
+                Console.Clear();
+
+                Console.WriteLine($"===== {title} =====");
+                Console.WriteLine();
+
+                for (i = 0; i < options.Length; i++)
+                {
+                    if (i == selectedIndex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine($"> {options[i]}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($" {options[i]}");
+                    }
+                }
+
+                keyInfo = Console.ReadKey(true);
+
+                if (keyInfo.Key == ConsoleKey.UpArrow)
+                {
+                    selectedIndex = selectedIndex - 1;
+
+                    if (selectedIndex < 0)
+                    {
+                        selectedIndex = options.Length - 1;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    selectedIndex = selectedIndex + 1;
+
+                    if (selectedIndex >= options.Length)
+                    {
+                        selectedIndex = 0;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    selectionConfirmed = true;
+                }
+            }
+
+            return selectedIndex;
         }
     }
 }
