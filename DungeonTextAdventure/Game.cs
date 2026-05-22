@@ -170,7 +170,6 @@
             }
         }
 
-
         private bool GenerateRoomEvent(Player player, int currentRoom)
         {
             int eventRoll;
@@ -190,12 +189,12 @@
                 Console.WriteLine("Du findest eine große, dunkle Tür.");
                 Console.WriteLine("Hinter ihr spürst du eine starke Präsenz...");
                 Console.WriteLine();
-                Console.WriteLine("Du hast den Bossraum gefunden!");
+                WriteColoredLine("Du hast den Bossraum gefunden!", ConsoleColor.Magenta);
                 Console.WriteLine();
 
                 enemy = new Boss();
 
-                Console.WriteLine($"Der Boss erscheint: {enemy.Name}");
+                WriteColoredLine($"Der Boss erscheint: {enemy.Name}", ConsoleColor.Magenta);
                 Console.WriteLine();
                 Console.WriteLine("Drücke eine Taste, um den Bosskampf zu starten...");
                 Console.ReadKey();
@@ -206,10 +205,10 @@
                 {
                     Console.Clear();
 
-                    Console.WriteLine("Du hast den Boss besiegt!");
+                    WriteColoredLine("Du hast den Boss besiegt!", ConsoleColor.Green);
                     Console.WriteLine("Der Dungeon wurde erfolgreich abgeschlossen.");
                     Console.WriteLine();
-                    Console.WriteLine("Du hasst gewonnen!");
+                    WriteColoredLine("Du hast gewonnen!", ConsoleColor.Green);
 
                     bossWasDefeated = true;
 
@@ -225,12 +224,12 @@
 
             if (eventRoll <= 60)
             {
-                Console.WriteLine("Du betrittst einen Gegnerraum!");
+                WriteColoredLine("Du betrittst einen Gegnerraum!", ConsoleColor.Red);
                 Console.WriteLine();
 
                 enemy = CreateRandomEnemy(currentRoom);
 
-                Console.WriteLine($"Ein {enemy.Name} erscheint!");
+                WriteColoredLine($"Ein {enemy.Name} erscheint!", ConsoleColor.Red);
                 Console.WriteLine();
                 Console.WriteLine("Drücke eine Taste, um den Kampf zu starten...");
                 Console.ReadKey();
@@ -239,7 +238,7 @@
             }
             else if (eventRoll <= 85)
             {
-                Console.WriteLine("Der Raum ist leer.");
+                WriteColoredLine("Der Raum ist leer.", ConsoleColor.DarkGray);
                 Console.WriteLine("Du kannst kurz durchatmen.");
 
                 Console.WriteLine();
@@ -250,13 +249,13 @@
             {
                 foundItem = CreateRandomItem();
 
-                Console.WriteLine("Du findest etwas am Boden.");
-                Console.WriteLine($"Gefunden: {foundItem.Name}");
+                WriteColoredLine("Du findest etwas am Boden.", ConsoleColor.Yellow);
+                WriteColoredLine($"Gefunden: {foundItem.Name}", ConsoleColor.Yellow);
 
                 player.AddItem(foundItem);
 
                 Console.WriteLine();
-                Console.WriteLine($"{foundItem.Name} wurde deinem Inventar hinzugefügt.");
+                WriteColoredLine($"{foundItem.Name} wurde deinem Inventar hinzugefügt.", ConsoleColor.Green);
 
                 Console.WriteLine();
                 Console.WriteLine("Drücke eine Taste, um fortzufahren...");
@@ -337,28 +336,28 @@
                 {
                     Console.WriteLine($"{player.Name} ist schneller und greift zuerst an.");
                     enemy.TakeDamage(player.Attack);
-                    Console.WriteLine($"{enemy.Name} verliert {player.Attack} HP.");
+                    WriteColoredLine($"{enemy.Name} verliert {player.Attack} HP.", ConsoleColor.Red);
 
                     if (enemy.IsDead() == false)
                     {
                         Console.WriteLine();
-                        Console.WriteLine($"{enemy.Name} greift zurueck.");
+                        Console.WriteLine($"{enemy.Name} greift zurück.");
                         player.TakeDamage(enemy.Attack);
-                        Console.WriteLine($"{player.Name} verliert {enemy.Attack} HP.");
+                        WriteColoredLine($"{player.Name} verliert {enemy.Attack} HP.", ConsoleColor.Red);
                     }
                 }
                 else
                 {
                     Console.WriteLine($"{enemy.Name} ist schneller und greift zuerst an.");
                     player.TakeDamage(enemy.Attack);
-                    Console.WriteLine($"{player.Name} verliert {enemy.Attack} HP.");
+                    WriteColoredLine($"{player.Name} verliert {enemy.Attack} HP.", ConsoleColor.Red);
 
                     if (player.IsDead() == false)
                     {
                         Console.WriteLine();
                         Console.WriteLine($"{player.Name} greift zurueck.");
                         enemy.TakeDamage(player.Attack);
-                        Console.WriteLine($"{enemy.Name} verliert {player.Attack} HP.");
+                        WriteColoredLine($"{enemy.Name} verliert {player.Attack} HP.", ConsoleColor.Red);
                     }
                 }
 
@@ -369,8 +368,8 @@
                 if (player.IsDead())
                 {
                     Console.Clear();
-                    Console.WriteLine("Du wurdest besiegt.");
-                    Console.WriteLine("Deine Reise endet hier.");
+                    WriteColoredLine("Du wurdest besiegt.", ConsoleColor.Red);
+                    WriteColoredLine("Deine Reise endet hier.", ConsoleColor.DarkRed);
 
                     fightIsRunning = false;
 
@@ -383,7 +382,7 @@
                 {
                     Console.Clear();
 
-                    Console.WriteLine($"{enemy.Name} wurde besiegt.");
+                    WriteColoredLine($"{enemy.Name} wurde besiegt.", ConsoleColor.Green);
 
                     player.GainExp(enemy.ExpReward);
 
@@ -585,16 +584,18 @@
 
         private void ShowTitle()
         {
-            Console.WriteLine("==================================");
-            Console.WriteLine("      Dungeon Text Adventure      ");
-            Console.WriteLine("==================================");
+            WriteColoredLine("==================================", ConsoleColor.Cyan);
+            WriteColoredLine("      Dungeon Text Adventure      ", ConsoleColor.Cyan);
+            WriteColoredLine("==================================", ConsoleColor.Cyan);
             Console.WriteLine();
         }
 
         private void WriteColoredLine(string text, ConsoleColor color)
         {
             Console.ForegroundColor = color;
+
             Console.WriteLine(text);
+
             Console.ResetColor();
         }
 
