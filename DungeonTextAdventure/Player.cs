@@ -292,5 +292,41 @@
 
             return true;
         }
+
+        public void GainExp(int expAmount)
+        {
+            Exp = Exp + expAmount;
+
+            Console.WriteLine($"Du erhätst {expAmount} EXP");
+
+            while (Exp >= ExpToNextLevel)
+            {
+                Exp = Exp - ExpToNextLevel;
+
+                LevelUp();
+            }
+        }
+
+        public void LevelUp()
+        {
+            Level = Level + 1;
+
+            MaxHp = MaxHp + 20;
+            Attack = Attack + 3;
+            Speed = Speed + 1;
+
+            CurrentHp = MaxHp;
+
+            ExpToNextLevel = ExpToNextLevel + 50;
+
+            Console.WriteLine();
+            Console.WriteLine("Level Up!");
+            Console.WriteLine($"Du bist jetzt Level {Level}.");
+            Console.WriteLine();
+            Console.WriteLine("MaxHP +20");
+            Console.WriteLine("ANG +3");
+            Console.WriteLine("SPD +1");
+            Console.WriteLine("Deine HP wurden vollständig wiederhergestellt.");
+        }
     }
 }

@@ -435,7 +435,9 @@
                     Console.Clear();
 
                     Console.WriteLine($"{enemy.Name} wurde besiegt.");
-                    Console.WriteLine($"Du erhältst {enemy.ExpReward} EXP.");
+
+                    player.GainExp(enemy.ExpReward);
+
                     Console.WriteLine();
                     Console.WriteLine("Der Weg durch den Dungeon geht weiter.");
 
