@@ -103,7 +103,7 @@
 
             while (dungeonIsRunning == true)
             {
-                selectedOption = ShowSelectionMenu("DUNGEON", dungeonOptions);
+                selectedOption = ShowSelectionMenu("DUNGEON", dungeonOptions, GetDungeonArt());
 
                 if (selectedOption == 0)
                 {
@@ -189,11 +189,15 @@
                 Console.WriteLine("Du findest eine große, dunkle Tür.");
                 Console.WriteLine("Hinter ihr spürst du eine starke Präsenz...");
                 Console.WriteLine();
+
                 WriteColoredLine("Du hast den Bossraum gefunden!", ConsoleColor.Magenta);
                 Console.WriteLine();
 
+                ShowArt(GetBossArt(), ConsoleColor.Magenta);
+
                 enemy = new Boss();
 
+                Console.WriteLine();
                 WriteColoredLine($"Der Boss erscheint: {enemy.Name}", ConsoleColor.Magenta);
                 Console.WriteLine();
                 Console.WriteLine("Drücke eine Taste, um den Bosskampf zu starten...");
@@ -447,7 +451,7 @@
 
             while (inventoryIsOpen == true)
             {
-                selectedOption = ShowSelectionMenu("INVENTAR", inventoryOptions);
+                selectedOption = ShowSelectionMenu("INVENTAR", inventoryOptions, GetInventoryArt());
 
                 if (selectedOption == 0)
                 {
@@ -517,7 +521,7 @@
 
             itemOptions[itemOptions.Length - 1] = "Zurück";
 
-            selectedIndex = ShowSelectionMenu(title, itemOptions);
+            selectedIndex = ShowSelectionMenu(title, itemOptions, GetInventoryArt());
 
             if (selectedIndex == itemOptions.Length - 1)
             {
@@ -599,7 +603,7 @@
             Console.ResetColor();
         }
 
-        private int ShowSelectionMenu(string title, string[] options)
+        private int ShowSelectionMenu(string title, string[] options, string[]? artLines = null)
         {
             int selectedIndex;
             int i;
@@ -616,16 +620,27 @@
                 Console.WriteLine($"===== {title} =====");
                 Console.WriteLine();
 
+                if (artLines != null)
+                {
+                    for (i = 0; i < artLines.Length; i++)
+                    {
+                        Console.WriteLine(artLines[i]);
+                    }
+
+                    Console.WriteLine();
+                }
+
                 for (i = 0; i < options.Length; i++)
                 {
                     if (i == selectedIndex)
                     {
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine($"> {options[i]}");
+                        Console.ResetColor();
                     }
                     else
                     {
-                        Console.WriteLine($" {options[i]}");
+                        Console.WriteLine($"  {options[i]}");
                     }
                 }
 
@@ -656,6 +671,77 @@
             }
 
             return selectedIndex;
+        }
+
+        private string[] GetDungeonArt()
+        {
+            string[] dungeonArt;
+
+            dungeonArt = new string[]
+            {
+        "        ______        ______",
+        "       |      |      |      |",
+        "       |  []  |      |  []  |",
+        "       |      |      |      |",
+        "       |______|      |______|",
+        "",
+        "        Linke Tür    Rechte Tür"
+            };
+
+            return dungeonArt;
+        }
+
+        private string[] GetInventoryArt()
+        {
+            string[] inventoryArt;
+
+            inventoryArt = new string[]
+            {
+        "             _________",
+        "            /         \\",
+        "           /___________\\",
+        "           |           |",
+        "           |   BAG     |",
+        "           |           |",
+        "           |___________|"
+            };
+
+            return inventoryArt;
+        }
+
+        private string[] GetBossArt()
+        {
+            string[] bossArt;
+
+            bossArt = new string[]
+            {
+        "              /\\",
+        "             /  \\",
+        "            /____\\",
+        "           /      \\",
+        "          |  o  o  |",
+        "          |   __   |",
+        "          |  |__|  |",
+        "          |________|",
+        "             /||\\",
+        "            /_||_\\"
+            };
+
+            return bossArt;
+        }
+
+        private void ShowArt(string[] artLines, ConsoleColor color)
+        {
+            int i;
+
+            Console.ForegroundColor = color;
+
+            for (i = 0; i < artLines.Length; i++)
+            {
+                Console.WriteLine(artLines[i]);
+            }
+
+            Console.ResetColor();
         }
     }
 }
