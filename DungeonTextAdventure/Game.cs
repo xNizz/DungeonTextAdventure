@@ -16,10 +16,7 @@
 
             Console.Clear();
 
-            Console.WriteLine("==================================");
-            Console.WriteLine("      Dungeon Text Adventure      ");
-            Console.WriteLine("==================================");
-            Console.WriteLine();
+            ShowTitle();
 
             player = CreatePlayer();
 
@@ -27,9 +24,7 @@
 
             player.ShowStats();
 
-            Console.WriteLine();
-            Console.WriteLine("Druecke eine Taste, um den Dungeon zu betreten...");
-            Console.ReadKey();
+            PauseWithKey("Drücke eine Taste, um den Dungeon zu betreten...");
 
             StartDungeon(player);
 
@@ -595,6 +590,35 @@
                     Console.ReadKey();
                 }
             }
+        }
+
+        private void PauseWithKey(string message)
+        {
+            Console.WriteLine();
+            Console.WriteLine(message);
+            Console.ReadKey();
+        }
+
+        private void PauseWithEnter(string message)
+        {
+            Console.WriteLine();
+            Console.WriteLine(message);
+            Console.ReadLine();
+        }
+
+        private void ShowTitle()
+        {
+            Console.WriteLine("==================================");
+            Console.WriteLine("      Dungeon Text Adventure      ");
+            Console.WriteLine("==================================");
+            Console.WriteLine();
+        }
+
+        private void WriteColoredLine(string text, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
     }
 }
