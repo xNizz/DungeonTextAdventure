@@ -38,14 +38,18 @@
         private Player CreatePlayer()
         {
             string playerName;
-            string input;
-            bool validInput;
+            int selectedOption;
             PlayerClass selectedClass;
             Player player;
-
-            validInput = false;
+            string[] classOptions;
 
             selectedClass = new PlayerClass("Tank", 140, 8, 6);
+
+            classOptions = new string[]
+            {
+                "Tank - Mehr HP, weniger ANG und SPD",
+                "DPS - Mehr ANG und SPD, weniger HP"
+            };
 
             Console.Clear();
 
@@ -61,44 +65,15 @@
                 playerName = Console.ReadLine() ?? "";
             }
 
-            Console.Clear();
+            selectedOption = ShowSelectionMenu("KLASSE WÄHLEN", classOptions);
 
-            while (validInput == false)
+            if (selectedOption == 0)
             {
-                Console.Clear();
-
-                Console.WriteLine("Wähle deine Klasse:");
-                Console.WriteLine();
-
-                Console.WriteLine("1.   Tank");
-                Console.WriteLine("     Mehr HP, weniger ANG und SPD");
-                Console.WriteLine();
-
-                Console.WriteLine("2.   DPS");
-                Console.WriteLine("     Mehr ANG und SPD, weniger HP");
-                Console.WriteLine();
-
-                Console.Write("Deine Auswahl: ");
-                input = Console.ReadLine() ?? "";
-
-                if (input == "1")
-                {
-                    selectedClass = new PlayerClass("Tank", 140, 8, 6);
-                    validInput = true;
-                }
-                else if (input == "2")
-                {
-                    selectedClass = new PlayerClass("DPS", 90, 14, 10);
-                    validInput = true;
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine();
-                    Console.WriteLine("Ungültige Eingabe. Bitte 1 oder 2 eingeben.");
-                    Console.WriteLine("Drücke eine Taste, um es erneut zu versuchen...");
-                    Console.ReadKey();
-                }
+                selectedClass = new PlayerClass("Tank", 140, 8, 6);
+            }
+            else if (selectedOption == 1)
+            {
+                selectedClass = new PlayerClass("DPS", 90, 14, 10);
             }
 
             player = new Player(playerName, selectedClass);
@@ -194,7 +169,7 @@
                 }
             }
         }
-        
+
 
         private bool GenerateRoomEvent(Player player, int currentRoom)
         {
@@ -466,9 +441,9 @@
 
             inventoryOptions = new string[]
             {
-        "Item benutzen",
-        "Ausrüstung anlegen",
-        "Zurück"
+                "Item benutzen",
+                "Ausrüstung anlegen",
+                "Zurück"
             };
 
             while (inventoryIsOpen == true)
