@@ -457,118 +457,138 @@
 
         private void OpenInventory(Player player)
         {
-            string input;
-            bool inventoryIsOpen;
-            int selectedItemNumber;
+            int selectedOption;
             int inventoryIndex;
+            bool inventoryIsOpen;
+            string[] inventoryOptions;
 
             inventoryIsOpen = true;
 
+            inventoryOptions = new string[]
+            {
+        "Item benutzen",
+        "Ausrüstung anlegen",
+        "Zurück"
+            };
+
             while (inventoryIsOpen == true)
             {
-                Console.Clear();
+                selectedOption = ShowSelectionMenu("INVENTAR", inventoryOptions);
 
-                player.ShowInventory();
-
-                Console.WriteLine();
-                Console.WriteLine("Was möchtest du tun?");
-                Console.WriteLine();
-                Console.WriteLine("1. Item benutzen");
-                Console.WriteLine("2. Ausrüstung anlegen");
-                Console.WriteLine("3. Zurück");
-                Console.WriteLine();
-                Console.Write("Deine Auswahl: ");
-
-                input = Console.ReadLine() ?? "";
-
-                if (input == "1")
+                if (selectedOption == 0)
                 {
                     Console.Clear();
 
                     if (player.Inventory.Count == 0)
                     {
                         Console.WriteLine("Dein Inventar ist leer.");
+                        PauseWithKey("Drücke eine Taste, um zum Inventar zurückzukehren...");
                     }
                     else
                     {
-                        player.ShowInventory();
+                        inventoryIndex = ShowInventoryItemSelection(player, "ITEM BENUTZEN");
 
-                        Console.WriteLine();
-                        Console.Write("Welches Item möchtest du benutzen? ");
-
-                        input = Console.ReadLine() ?? "";
-
-                        if (int.TryParse(input, out selectedItemNumber))
+                        if (inventoryIndex != -1)
                         {
-                            inventoryIndex = selectedItemNumber - 1;
-
                             Console.Clear();
 
                             player.UsePotion(inventoryIndex);
-                        }
-                        else
-                        {
-                            Console.Clear();
 
-                            Console.WriteLine("Ungültige Eingabe. Bitte eine Zahl eingeben.");
+                            PauseWithKey("Drücke eine Taste, um zum Inventar zurückzukehren...");
                         }
                     }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Drücke eine Taste, um zum Inventar zurückzukehren...");
-                    Console.ReadKey();
                 }
-                else if (input == "2")
+                else if (selectedOption == 1)
                 {
                     Console.Clear();
 
                     if (player.Inventory.Count == 0)
                     {
                         Console.WriteLine("Dein Inventar ist leer.");
+                        PauseWithKey("Drücke eine Taste, um zum Inventar zurückzukehren...");
                     }
                     else
                     {
-                        player.ShowInventory();
+                        inventoryIndex = ShowInventoryItemSelection(player, "AUSRÜSTUNG ANLEGEN");
 
-                        Console.WriteLine();
-                        Console.Write("Welche Ausrüstung möchtest du anlegen? ");
-
-                        input = Console.ReadLine() ?? "";
-
-                        if (int.TryParse(input, out selectedItemNumber))
+                        if (inventoryIndex != -1)
                         {
-                            inventoryIndex = selectedItemNumber - 1;
-
                             Console.Clear();
 
                             player.EquipItem(inventoryIndex);
-                        }
-                        else
-                        {
-                            Console.Clear();
 
-                            Console.WriteLine("Ungültige Eingabe. Bitte eine Zahl eingeben.");
+                            PauseWithKey("Drücke eine Taste, um zum Inventar zurückzukehren...");
                         }
                     }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Drücke eine Taste, um zum Inventar zurückzukehren...");
-                    Console.ReadKey();
                 }
-                else if (input == "3")
+                else if (selectedOption == 2)
                 {
                     inventoryIsOpen = false;
                 }
+            }
+        }
+
+        private int ShowInventoryItemSelection(Player player, string title)
+        {
+            string[] itemOptions;
+            int selectedIndex;
+            int i;
+
+            itemOptions = new string[player.Inventory.Count + 1];
+
+            for (i = 0; i < player.Inventory.Count; i++)
+            {
+                itemOptions[i] = CreateInventoryOptionText(player.Inventory[i]);
+            }
+
+            itemOptions[itemOptions.Length - 1] = "Zurück";
+
+            selectedIndex = ShowSelectionMenu(title, itemOptions);
+
+            if (selectedIndex == itemOptions.Length - 1)
+            {
+                return -1;
+            }
+
+            return selectedIndex;
+        }
+
+        private string CreateInventoryOptionText(InventoryItem inventoryItem)
+        {
+            Item item;
+            string optionText;
+
+            item = inventoryItem.Item;
+
+            if (item.Type == "Potion")
+            {
+                optionText = $"{item.Name} x{inventoryItem.Quantity} | heilt {item.HealAmount} HP";
+            }
+            else if (item.Type == "Equipment")
+            {
+                if (item.Slot == "Weapon")
+                {
+                    optionText = $"{item.Name} x{inventoryItem.Quantity} | Waffe | ANG +{item.AttackBonus}";
+                }
+                else if (item.Slot == "Armor")
+                {
+                    optionText = $"{item.Name} x{inventoryItem.Quantity} | Rüstung | HP +{item.HpBonus}";
+                }
+                else if (item.Slot == "Boots")
+                {
+                    optionText = $"{item.Name} x{inventoryItem.Quantity} | Schuhe | SPD +{item.SpeedBonus}";
+                }
                 else
                 {
-                    Console.Clear();
-
-                    Console.WriteLine("Ungültige Eingabe. Bitte 1 oder 2 eingeben.");
-                    Console.WriteLine();
-                    Console.WriteLine("Drücke eine Taste, um es erneut zu versucen...");
-                    Console.ReadKey();
+                    optionText = $"{item.Name} x{inventoryItem.Quantity} | Ausrüstung";
                 }
             }
+            else
+            {
+                optionText = $"{item.Name} x{inventoryItem.Quantity}";
+            }
+
+            return optionText;
         }
 
 
