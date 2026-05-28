@@ -4,6 +4,10 @@
     {
         private Random random;
 
+        private const int BossCanAppearFromRoom = 20;
+        private const int BossGuaranteedFromRoom = 25;
+        private const int BossRoomChance = 20;
+
         public Game()
         {
             random = new Random();
@@ -184,7 +188,7 @@
 
             bossRoll = random.Next(1, 101);
 
-            if (currentRoom >= 8 || (currentRoom >= 5 && bossRoll <= 20))
+            if (currentRoom >= BossGuaranteedFromRoom || (currentRoom >= BossCanAppearFromRoom && bossRoll <= BossRoomChance))
             {
                 Console.WriteLine("Du findest eine große, dunkle Tür.");
                 Console.WriteLine("Hinter ihr spürst du eine starke Präsenz...");
@@ -276,7 +280,7 @@
 
             enemyRoll = random.Next(1, 101);
 
-            if (currentRoom <= 2)
+            if (currentRoom <= 4)               // Raum 1 bis 4: 70% goblin, 30% Skeleton
             {
                 if (enemyRoll <= 70)
                 {
@@ -287,9 +291,9 @@
                     enemy = new Skeleton();
                 }
             }
-            else if (currentRoom <= 4)
+            else if (currentRoom <= 10)         // Raum 5 bis 10: 40% Skeleton, 60% Orc
             {
-                if (enemyRoll <= 80)
+                if (enemyRoll <= 40)
                 {
                     enemy = new Skeleton();
                 }
@@ -298,16 +302,20 @@
                     enemy = new Orc();
                 }
             }
-            else
+            else if (currentRoom <= 19)         // Raum 11 bis 19: 25% Skeleton, 75% Orc
             {
-                if (enemyRoll <= 35)
+                if (enemyRoll <= 25)
                 {
                     enemy = new Skeleton();
                 }
-                else
+                else                            
                 {
                     enemy = new Orc();
                 }
+            }
+            else                                // Ab Raum 20: 100% Orc
+            {
+                enemy = new Orc();
             }
 
             return enemy;
